@@ -45,6 +45,8 @@ TODO:
 
 - Add support for WorldEnvironment, Decals, and audio sources.
 - Add support for TrenchBroom groups and layers.
+- Remove requirement for `_fgl_get_uuid` and `_fgl_set_uuid`- just use node
+  metadata instead.
 - More testing.
 - Document how you can write *any* scene instance back to a file, not just
   lights. Remove restriction in `_gather_light_nodes` that only finds lights.
