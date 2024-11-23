@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDPointClass" load_steps=4 format=3 uid="uid://rmfeiylw03l2"]
+
+[ext_resource type="Resource" uid="uid://dt1ocn3xxxvsg" path="res://addons/func-godot-lightpass/lights/fgd/base_fglight.tres" id="1_1a4jh"]
+[ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class.gd" id="1_qmm5c"]
+[ext_resource type="Script" path="res://addons/func-godot-lightpass/lights/scripts/fglight_omni.gd" id="3_yphdf"]
+
+[resource]
+script = ExtResource("1_qmm5c")
+script_class = ExtResource("3_yphdf")
+apply_rotation_on_map_build = true
+classname = "fglight_omni"
+description = "Omnidirectional point  light."
+func_godot_internal = false
+base_classes = Array[Resource]([ExtResource("1_1a4jh")])
+class_properties = {
+"omni_attenuation": 1.0,
+"omni_range": 5.0,
+"omni_shadow_mode": 1,
+"shadow_normal_bias": 1.0
+}
+class_property_descriptions = {
+"omni_attenuation": "Controls the distance attenuation function for omnilights. A value of 0.0 will maintain a constant brightness through most of the range, but smoothly attenuate the light at the edge of the range. Use a value of 2.0 for physically accurate lights as it results in the proper inverse square attenutation.",
+"omni_range": "Controls the distance attenuation function for omnilights."
+}
+meta_properties = {
+"color": Color(0.8, 0.8, 0.8, 1),
+"size": AABB(-8, -8, -8, 8, 8, 8)
+}
+node_class = "OmniLight3D"
+name_property = ""

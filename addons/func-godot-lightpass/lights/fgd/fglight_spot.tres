@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDPointClass" load_steps=3 format=3 uid="uid://dk2ug202hjdn5"]
+
+[ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class.gd" id="1_0b7ti"]
+[ext_resource type="Resource" uid="uid://dt1ocn3xxxvsg" path="res://addons/func-godot-lightpass/lights/fgd/base_fglight.tres" id="1_aobl0"]
+
+[resource]
+script = ExtResource("1_0b7ti")
+apply_rotation_on_map_build = true
+classname = "fglight_spot"
+description = "Cone-shaped (spot) point light."
+func_godot_internal = false
+base_classes = Array[Resource]([ExtResource("1_aobl0")])
+class_properties = {
+"shadow_bias": 0.03,
+"shadow_normal_bias": 1.0,
+"spot_angle": 45.0,
+"spot_angle_attenuation": 1.0,
+"spot_attenuation": 1.0,
+"spot_range": 5.0
+}
+class_property_descriptions = {
+"spot_angle": "spot_angle",
+"spot_angle_attenuation": "The spotlight's angular attenuation curve. See also spot_attenuation.",
+"spot_attenuation": "Controls the distance attenuation function for spotlights.A value of 0.0 will maintain a constant brightness through most of the range, but smoothly attenuate the light at the edge of the range. Use a value of 2.0 for physically accurate lights as it results in the proper inverse square attenutation.",
+"spot_range": "The maximal range that can be reached by the spotlight. Note that the effectively lit area may appear to be smaller depending on the spot_attenuation in use. No matter the spot_attenuation in use, the light will never reach anything outside this range."
+}
+meta_properties = {
+"color": Color(0.8, 0.8, 0.8, 1),
+"size": AABB(-8, -8, -8, 8, 8, 8)
+}
+node_class = "SpotLight3D"
+name_property = ""

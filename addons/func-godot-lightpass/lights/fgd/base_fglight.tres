@@ -1,0 +1,62 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDPointClass" load_steps=3 format=3 uid="uid://dt1ocn3xxxvsg"]
+
+[ext_resource type="Resource" uid="uid://carm2503dekwv" path="res://addons/func-godot-lightpass/base_godot_exportable.tres" id="1_7l0j3"]
+[ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class.gd" id="2_3sogi"]
+
+[resource]
+script = ExtResource("2_3sogi")
+apply_rotation_on_map_build = true
+classname = "base_fglight"
+description = "Base entity class for all FuncGodotLightpass 
+lights."
+func_godot_internal = false
+base_classes = Array[Resource]([ExtResource("1_7l0j3")])
+class_properties = {
+"color": Color(1, 1, 1, 1),
+"distance_fade_begin": 40.0,
+"distance_fade_enabled": false,
+"distance_fade_length": 10.0,
+"distance_fade_shadow": 50.0,
+"editor_only": false,
+"func_godot_lightpass_uuid": 0,
+"light_angular_distance": 0.0,
+"light_bake_mode": 2,
+"light_cull_mask": 4294967295,
+"light_energy": 1.0,
+"light_indirect_energy": 1.0,
+"light_negative": false,
+"light_size": 0.0,
+"light_specular": 0.5,
+"light_volumetric_fog_energy": 1.0,
+"shadow_bias": 0.1,
+"shadow_blur": 1.0,
+"shadow_enabled": false,
+"shadow_normal_bias": 2.0,
+"shadow_opacity": 1.0,
+"shadow_reverse_cull_face": false,
+"shadow_transmittance_bias": 0.05,
+"targetname": "",
+"targetname0": "",
+"targetname1": "",
+"targetname2": "",
+"visible": true
+}
+class_property_descriptions = {
+"color": "The light's color. An overbright color can be used to achieve a result equivalent to increasing the light's light_energy.",
+"light_energy": "The light's strength multiplier (this is not a physical unit). For OmniLight3D and SpotLight3D, changing this value will only change the light color's intensity, not the light's radius.",
+"light_indirect_energy": "Secondary multiplier used with indirect light (light bounces). Used with VoxelGI and SDFGI",
+"shadow_bias": "Used to adjust shadow appearance. Too small a value results in self-shadowing (shadow acne), while too large a value causes shadows to separate from casters (peter-panning).",
+"shadow_enabled": "Whether this light casts shadows.",
+"targetname": "String which does nothing by default but will be stored in this lights _internal_properties dictionary for later use by the developer.",
+"targetname0": "",
+"targetname1": "",
+"targetname2": "",
+"visible": "Whether this light and its children are visible in the scene tree."
+}
+meta_properties = {
+"color": Color(0.8, 0.8, 0.8, 1),
+"model": "{\"path\": \"addons/func-godot-lightpass/icon/omni.png\", \"scale\": 1}",
+"size": AABB(-8, -8, -8, 8, 8, 8)
+}
+node_class = ""
+name_property = ""

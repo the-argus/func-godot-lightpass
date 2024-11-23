@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDPointClass" load_steps=2 format=3 uid="uid://carm2503dekwv"]
+
+[ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class.gd" id="1_xa1i4"]
+
+[resource]
+script = ExtResource("1_xa1i4")
+apply_rotation_on_map_build = true
+classname = "base_godot_exportable"
+description = "Parent definition for entities which should be placeable in either godot or trenchbroom and then serialized out to the map file."
+func_godot_internal = false
+base_classes = Array[Resource]([])
+class_properties = {
+"_godot_to_quake_uuid": 0
+}
+class_property_descriptions = {
+"_godot_to_quake_uuid": "Do not edit- generated property needed for exporting entities to and from godot and a .map file."
+}
+meta_properties = {
+"color": Color(0.8, 0.8, 0.8, 1),
+"size": AABB(-8, -8, -8, 8, 8, 8)
+}
+node_class = ""
+name_property = ""

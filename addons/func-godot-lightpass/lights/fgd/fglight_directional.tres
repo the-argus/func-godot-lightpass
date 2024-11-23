@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDPointClass" load_steps=4 format=3 uid="uid://cxsrhsjpx4wvt"]
+
+[ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class.gd" id="1_bbkuq"]
+[ext_resource type="Resource" uid="uid://dt1ocn3xxxvsg" path="res://addons/func-godot-lightpass/lights/fgd/base_fglight.tres" id="1_nc60x"]
+[ext_resource type="Script" path="res://addons/func-godot-lightpass/lights/scripts/fglight_directional.gd" id="3_xj1e4"]
+
+[resource]
+script = ExtResource("1_bbkuq")
+script_class = ExtResource("3_xj1e4")
+apply_rotation_on_map_build = true
+classname = "fglight_directional"
+description = "Global directional light."
+func_godot_internal = false
+base_classes = Array[Resource]([ExtResource("1_nc60x")])
+class_properties = {
+"directional_shadow_blend_splits": false,
+"directional_shadow_fade_start": 0.8,
+"directional_shadow_max_distance": 100.0,
+"directional_shadow_mode": 2,
+"directional_shadow_pancake_size": 20.0,
+"directional_shadow_split_1": 0.1,
+"directional_shadow_split_2": 0.2,
+"directional_shadow_split_3": 0.5,
+"sky_mode": 0
+}
+class_property_descriptions = {
+"directional_shadow_blend_splits": "If true, shadow detail is sacrificed in exchange for smoother transitions between splits. Enabling shadow blend splitting also has a moderate performance cost.",
+"directional_shadow_fade_start": "Proportion of directional_shadow_max_distance at which point the shadow starts to fade. At directional_shadow_max_distance, the shadow will disappear.",
+"directional_shadow_max_distance": "The maximum distance for shadow splits. Increasing this value will make directional shadows visible from further away, at the cost of lower overall shadow detail and performance.",
+"directional_shadow_mode": "The light's shadow rendering algorithm.",
+"directional_shadow_pancake_size": "Sets the size of the directional shadow pancake. The pancake offsets the start of the shadow's camera frustum to provide a higher effective depth resolution for the shadow.",
+"directional_shadow_split_1": "The distance from camera to shadow split 1. Relative to directional_shadow_max_distance.",
+"directional_shadow_split_2": "The distance from shadow split 1 to shadow split 2. Relative to directional_shadow_max_distance.",
+"directional_shadow_split_3": "The distance from shadow split 2 to shadow split 3. Relative to directional_shadow_max_distance.",
+"sky_mode": "Set whether this DirectionalLight3D is visible in the sky, in the scene, or both in the sky and in the scene."
+}
+meta_properties = {
+"color": Color(0.8, 0.8, 0.8, 1),
+"size": AABB(-8, -8, -8, 8, 8, 8)
+}
+node_class = "DirectionalLight3D"
+name_property = ""
