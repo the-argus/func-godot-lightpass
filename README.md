@@ -17,9 +17,10 @@ These lights have an additional option on them: "Export all lights in this map."
 Pressing this button will cause the light to find all of the other lights
 underneath the `FuncGodotMap` and write them out to the corresponding `.map`
 file, appending them as entities to the end.
-After doing this, you will be able to see your lights in TrenchBroom or Quake
-level editor of your choice. You can move them around or add more from thelevel
-editor, too, meaning more flexible iteration.
+
+After doing this, you will be able to see your lights in TrenchBroom (or a Quake
+level editor of your choice). You can edit lights equally well from within the
+level editor.
 
 ## WARNING
 
@@ -42,6 +43,7 @@ Features:
 
 TODO:
 
+- More testing.
 - Document how you can write *any* scene instance back to a file, not just
   lights. Remove restriction in `_gather_light_nodes` that only finds lights.
 - Support serializing Texture2Ds, for light's projector textures.
