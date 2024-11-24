@@ -2,10 +2,10 @@
 
 [ext_resource type="Resource" uid="uid://carm2503dekwv" path="res://addons/func-godot-lightpass/base_godot_exportable.tres" id="1_makkp"]
 [ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_file.gd" id="1_qwc5c"]
-[ext_resource type="Resource" uid="uid://dt1ocn3xxxvsg" path="res://addons/func-godot-lightpass/lights/fgd/base_fglight.tres" id="2_dtnu2"]
-[ext_resource type="Resource" uid="uid://rmfeiylw03l2" path="res://addons/func-godot-lightpass/lights/fgd/fglight_omni.tres" id="3_i0p25"]
-[ext_resource type="Resource" uid="uid://dk2ug202hjdn5" path="res://addons/func-godot-lightpass/lights/fgd/fglight_spot.tres" id="4_6tc0a"]
-[ext_resource type="Resource" uid="uid://cxsrhsjpx4wvt" path="res://addons/func-godot-lightpass/lights/fgd/fglight_directional.tres" id="5_me2ma"]
+[ext_resource type="Resource" uid="uid://dt1ocn3xxxvsg" path="res://addons/func-godot-lightpass/fgd/base_fglight.tres" id="2_dtnu2"]
+[ext_resource type="Resource" uid="uid://rmfeiylw03l2" path="res://addons/func-godot-lightpass/fgd/fglight_omni.tres" id="3_i0p25"]
+[ext_resource type="Resource" uid="uid://dk2ug202hjdn5" path="res://addons/func-godot-lightpass/fgd/fglight_spot.tres" id="4_6tc0a"]
+[ext_resource type="Resource" uid="uid://cxsrhsjpx4wvt" path="res://addons/func-godot-lightpass/fgd/fglight_directional.tres" id="5_me2ma"]
 
 [resource]
 script = ExtResource("1_qwc5c")

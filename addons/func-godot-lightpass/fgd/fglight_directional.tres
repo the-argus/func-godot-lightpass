@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="FuncGodotFGDPointClass" load_steps=4 format=3 uid="uid://cxsrhsjpx4wvt"]
 
 [ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class.gd" id="1_bbkuq"]
-[ext_resource type="Resource" uid="uid://dt1ocn3xxxvsg" path="res://addons/func-godot-lightpass/lights/fgd/base_fglight.tres" id="1_nc60x"]
-[ext_resource type="Script" path="res://addons/func-godot-lightpass/lights/scripts/fglight_directional.gd" id="3_xj1e4"]
+[ext_resource type="Resource" uid="uid://dt1ocn3xxxvsg" path="res://addons/func-godot-lightpass/fgd/base_fglight.tres" id="1_nc60x"]
+[ext_resource type="Script" path="res://addons/func-godot-lightpass/fgl_node.gd" id="3_rna2c"]
 
 [resource]
 script = ExtResource("1_bbkuq")
-script_class = ExtResource("3_xj1e4")
+script_class = ExtResource("3_rna2c")
 apply_rotation_on_map_build = true
 classname = "fglight_directional"
 description = "Global directional light."

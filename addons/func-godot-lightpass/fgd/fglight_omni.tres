@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="FuncGodotFGDPointClass" load_steps=4 format=3 uid="uid://rmfeiylw03l2"]
 
-[ext_resource type="Resource" uid="uid://dt1ocn3xxxvsg" path="res://addons/func-godot-lightpass/lights/fgd/base_fglight.tres" id="1_1a4jh"]
+[ext_resource type="Resource" uid="uid://dt1ocn3xxxvsg" path="res://addons/func-godot-lightpass/fgd/base_fglight.tres" id="1_1a4jh"]
 [ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class.gd" id="1_qmm5c"]
-[ext_resource type="Script" path="res://addons/func-godot-lightpass/lights/scripts/fglight_omni.gd" id="3_yphdf"]
+[ext_resource type="Script" path="res://addons/func-godot-lightpass/fgl_node.gd" id="3_mrbc8"]
 
 [resource]
 script = ExtResource("1_qmm5c")
-script_class = ExtResource("3_yphdf")
+script_class = ExtResource("3_mrbc8")
 apply_rotation_on_map_build = true
 classname = "fglight_omni"
 description = "Omnidirectional point light."
