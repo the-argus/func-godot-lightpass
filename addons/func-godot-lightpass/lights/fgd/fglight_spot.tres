@@ -1,16 +1,19 @@
-[gd_resource type="Resource" script_class="FuncGodotFGDPointClass" load_steps=3 format=3 uid="uid://dk2ug202hjdn5"]
+[gd_resource type="Resource" script_class="FuncGodotFGDPointClass" load_steps=4 format=3 uid="uid://dk2ug202hjdn5"]
 
 [ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class.gd" id="1_0b7ti"]
 [ext_resource type="Resource" uid="uid://dt1ocn3xxxvsg" path="res://addons/func-godot-lightpass/lights/fgd/base_fglight.tres" id="1_aobl0"]
+[ext_resource type="Script" path="res://addons/func-godot-lightpass/lights/scripts/fglight_spot.gd" id="3_oag08"]
 
 [resource]
 script = ExtResource("1_0b7ti")
+script_class = ExtResource("3_oag08")
 apply_rotation_on_map_build = true
 classname = "fglight_spot"
 description = "Cone-shaped (spot) point light."
 func_godot_internal = false
 base_classes = Array[Resource]([ExtResource("1_aobl0")])
 class_properties = {
+"angles": Vector3(0, 0, 0),
 "shadow_bias": 0.03,
 "shadow_normal_bias": 1.0,
 "spot_angle": 45.0,

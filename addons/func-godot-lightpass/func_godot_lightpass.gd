@@ -2,11 +2,6 @@
 class_name FuncGodotLightpass
 extends EditorPlugin
 
-const CUSTOM_NODE_FGD_CLASSNAMES := [
-	"lite_omni",
-	"lite_spot",
-	"lite_directional",
-]
 const CUSTOM_NODE_NAMES := [
 	"FGLOmniLight",
 	"FGLSpotLight",
@@ -59,6 +54,9 @@ static func update_mapfile_with_lightpass_lights(node: FuncGodotMap) -> void:
 	var data: FuncGodotLightpassParseData = _parse(cstream)
 	if not data: return
 
+	var exportable_classnames := _build_godot_exportable_classnames(
+		map_settings.entity_fgd)
+
 	var lights := _gather_light_nodes(node)
 	# generate uuids for lights that that have uuid zero
 	var used_uuids := data.uuids_to_point_entities.duplicate()
@@ -108,19 +106,37 @@ static func update_mapfile_with_lightpass_lights(node: FuncGodotMap) -> void:
 		if token_idx in data.token_index_to_entity_index:
 			var entity: Dictionary = data.point_entities[data.token_index_to_entity_index[token_idx]]
 			var uuid := _get_point_entity_uuid(entity)
-			if uuid >= 0: # this is some godot exportable entity
-				# this has a uuid, now check if its in the map and replace it
-				# with the updated version
-				if uuid in uuids_to_lights:
-					var light: FuncGodotLightpassBaseLight = uuids_to_lights[uuid]
-					var serialized := _serialize_fgl_node_to_map(
-						light, map_settings)
-					if serialized.is_empty():
-						return # could also just not change this node?
-					tokens.append(serialized)
-					assert(not uuid in serialized_uuids)
-					serialized_uuids[uuid] = true
+
+			if uuid < 0 and entity.get("classname", "") in exportable_classnames:
+				var found := false
+				var has_origin := "origin" in entity
+				var entity_position_according_to_map: Vector3 = _get_position_from_origin_string(
+					entity["origin"], map_settings.inverse_scale_factor) if has_origin else Vector3.ZERO
+				if has_origin:
+					for light in lights:
+						if light.position.distance_to(entity_position_according_to_map) < 0.001:
+							uuid = light._fgl_get_uuid()
+							found = true
+							break
+				if not found:
+					push_warning("FuncGodotLightpass: entity with no uuid ",
+					"found (something placed from trenchbroom, probably), but",
+					" no node was found in the same position to assign to it.",
+					" Removing it now.")
 					continue
+			# this has a uuid, now check if its in the map and replace it
+			# with the updated version
+			if uuid in uuids_to_lights:
+				var light: FuncGodotLightpassBaseLight = uuids_to_lights[uuid]
+				var serialized := _serialize_fgl_node_to_map(
+					light, map_settings)
+				if serialized.is_empty():
+					return # could also just not change this node?
+				tokens.append(serialized)
+				assert(not uuid in serialized_uuids)
+				serialized_uuids[uuid] = true
+				continue
+			elif uuid >= 0:
 				# this entity no longer exists in the map (there is not
 				# a corresponding light node) so dont append it back to
 				# the map file
@@ -264,6 +280,33 @@ static func _parse(cstream: FuncGodotLightpassCharStream) -> FuncGodotLightpassP
 		data.tokens.append(char)
 
 	return data
+
+## Return a dictionary of keys being string classnames mapped to boolean true
+## values. These classnames are the entity classnames which should be considered
+## as handled by FuncGodotLightpass
+static func _build_godot_exportable_classnames(fgd: FuncGodotFGDFile) -> Dictionary:
+	var out := {}
+	var basefiles := fgd.base_fgd_files.duplicate()
+	basefiles.reverse()
+	# NOTE: reversed so that FGD at the top gets highest priority
+	for base: FuncGodotFGDFile in basefiles:
+		out.merge(_build_godot_exportable_classnames(base))
+	for def: FuncGodotFGDEntityClass in fgd.entity_definitions:
+		if _is_entity_def_godot_exportable(def):
+			out[def.classname] = true
+	return out
+
+static func _is_entity_def_godot_exportable(def: FuncGodotFGDEntityClass) -> bool:
+	if "_godot_to_quake_uuid" in def.class_properties:
+		return true
+	for base: FuncGodotFGDEntityClass in def.base_classes:
+		if _is_entity_def_godot_exportable(base):
+			return true
+	return false
+
+static func _get_position_from_origin_string(origin: String, inverse_scale_factor: float) -> Vector3:
+	var nums: PackedFloat64Array = origin.split_floats(" ", false)
+	return Vector3(nums[1], nums[2], nums[0]) / inverse_scale_factor
 
 static func _gather_light_nodes(map: FuncGodotMap) -> Array[FuncGodotLightpassBaseLight]:
 	var nodes: Array[Node] = map.get_tree().get_nodes_in_group(&"func_godot_lightpass_light")

@@ -13,6 +13,7 @@ description = "Global directional light."
 func_godot_internal = false
 base_classes = Array[Resource]([ExtResource("1_nc60x")])
 class_properties = {
+"angles": Vector3(0, 0, 0),
 "directional_shadow_blend_splits": false,
 "directional_shadow_fade_start": 0.8,
 "directional_shadow_max_distance": 100.0,
