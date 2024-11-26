@@ -6,12 +6,14 @@ const CUSTOM_NODE_NAMES := [
 	"FGLOmniLight",
 	"FGLSpotLight",
 	"FGLDirectionalLight",
+	"FGLDecal",
 ]
 const FGL_NODE_SCRIPT := preload("fgl_node.gd")
 const CUSTOM_NODE_INHERITANCE := [
 	"OmniLight3D",
 	"SpotLight3D",
 	"DirectionalLight3D",
+	"Decal",
 ]
 const LIGHT_ICON = preload("./icon/omni.png")
 const DEFAULTS_SCRIPT = preload("./builtin_node_default_property_values.gd")
@@ -61,15 +63,40 @@ static func apply_entity_properties_as_object_properties(
 	property_list: Array[Dictionary]) -> void:
 	for property in property_list:
 		var propname: String = property["name"]
-		if object.get(propname) == null:
-			push_warning("FuncGodotLightpass: Unknown property being sent ",
-			"from .map to node, bad godot version?: ", propname)
-			continue
+		var classname: StringName = property["class_name"]
+		var type: Variant.Type = property["type"]
+		# NOTE: cant check if object.get(propname) is null here, because it
+		# could just be that the property is null by default.
 		var new_name: String = property.get("external_name", "") # renamed props
 		var name_to_check: String = propname if new_name.is_empty() else new_name
 		if not name_to_check in entity_properties:
 			continue
-		object.set(propname, entity_properties[name_to_check])
+		var value = entity_properties[name_to_check]
+
+		if type == Variant.Type.TYPE_OBJECT and value is String and value != "":
+			var resource_path: String = value.get_slice("::", 2)
+			# resource_type is a special value for FuncGodotLightpass determined
+			# by behavior in serialize_variant_to_map
+			var resource_type: String = value.get_slice("::", 0)
+			# resource class is just the .get_class() of the value
+			var resource_class: String = value.get_slice("::", 1)
+
+			if resource_path.is_empty() or resource_type.is_empty() or resource_class.is_empty():
+				push_error("FuncGodotLightpass: got TYPE_OBJECT for property ",
+				property, " on ", object, " but it does not seem to be a ",
+				"valid serialized resource. This is possibly an internal ",
+				"FuncGodotLightpass error.")
+				continue
+
+			if not ResourceLoader.exists(resource_path):
+				push_error("FuncGodotLightpass: Attempt to load a resource ",
+				"from path ", resource_path, " but found nothing. Did the ",
+				"referenced resource get moved around in the project files?")
+				continue
+
+			value = ResourceLoader.load(resource_path, )
+
+		object.set(propname, value)
 
 ## Given a func_godot map node, find all the lights under it and write those to
 ## its local map file.
@@ -106,16 +133,15 @@ static func export_entities_to_map_file(map_node: FuncGodotMap) -> void:
 		var uuid: int = node.get_meta(&"_godot_to_quake_uuid", 0)
 
 		if uuid == 0:
+			# resolve later after duplicates are resolved
 			continue
-		if uuid < 0:
+		elif uuid < 0:
 			push_error("FuncGodotLightpass: Found light with negative ",
 			"uuid, refusing to serialize as some code relies on uuids ",
 			"being positive")
 			return
 
-		if not used_uuids.has(uuid):
-			used_uuids[uuid] = true
-
+		# resolve duplicates
 		if uuid in uuids_to_nodes:
 			push_warning("FuncGodotLightpass: duplicate uuid ", uuid,
 			" from node ", node, " and ", uuids_to_nodes[uuid],
@@ -123,9 +149,17 @@ static func export_entities_to_map_file(map_node: FuncGodotMap) -> void:
 			"harmless in that case.")
 			uuid = gen_uuid.call()
 			node.set_meta(&"_godot_to_quake_uuid", uuid)
+
+		# often there will already be an entry under this uuid- when the node
+		# was imported from the map file and has the same uuid as its
+		# corresponding entity
+		if not uuid in used_uuids:
 			used_uuids[uuid] = true
+
 		uuids_to_nodes[uuid] = node
 
+	# resolve nodes with 0 uuids. usually should happen, but maybe possible
+	# if the user defined their own serializable script
 	for node in exportables:
 		var uuid: int = node.get_meta(&"_godot_to_quake_uuid", 0)
 		if uuid == 0:
@@ -139,52 +173,41 @@ static func export_entities_to_map_file(map_node: FuncGodotMap) -> void:
 
 	# replace all modified entities with their new serialized versions
 	for token_idx in data.tokens.size():
-		if token_idx in data.token_index_to_entity_index:
-			var entity: Dictionary = data.point_entities[data.token_index_to_entity_index[token_idx]]
-			var uuid := _get_point_entity_uuid(entity)
+		if not token_idx in data.token_index_to_entity_index:
+			tokens.append(data.tokens[token_idx])
+			continue
 
-			if uuid < 0 and entity.get("classname", "") in exportable_classnames:
-				var found := false
-				var has_origin := "origin" in entity
-				var entity_position_according_to_map: Vector3 = _get_position_from_origin_string(
-					entity["origin"], map_settings.inverse_scale_factor) if has_origin else Vector3.ZERO
-				if has_origin:
-					for node in exportables:
-						if not node is Node3D:
-							continue
-						if node.position.distance_to(entity_position_according_to_map) < 0.001:
-							uuid = node.get_meta(&"_godot_to_quake_uuid", -1)
-							if uuid == -1:
-								# not sure how this would even happen
-								push_error("FuncGodotLightpass: unrecoverable")
-								return
-							found = true
-							break
-				if not found:
-					push_warning("FuncGodotLightpass: entity with no uuid ",
-					"found (something placed from trenchbroom, probably), but",
-					" no node was found in the same position to assign to it.",
-					" Removing it now.")
-					continue
+		var entity: Dictionary = data.point_entities[data.token_index_to_entity_index[token_idx]]
 
-			# this has a uuid, now check if its in the map and replace it
-			# with the updated version
-			if uuid in uuids_to_nodes:
-				var node: Node = uuids_to_nodes[uuid]
-				var serialized := _serialize_fgl_node_to_map(
-					node, map_settings)
-				if serialized.is_empty():
-					return # could also just not change this node?
-				tokens.append(serialized)
-				assert(not uuid in serialized_uuids)
-				serialized_uuids[uuid] = true
+		if not entity.get("classname", "") in exportable_classnames:
+			tokens.append(data.tokens[token_idx])
+			continue
+
+		var uuid := _get_point_entity_uuid(entity)
+
+		# fix bad uuids
+		if uuid < 0:
+			# try to find an entity at this same position, maybe that is
+			# generated node
+			uuid = _resolve_entity_with_no_uuid(entity, exportables, map_settings)
+			if uuid == -1:
+				return
+			elif uuid < 0:
+				# delete entity
 				continue
-			elif uuid >= 0:
-				# this entity no longer exists in the map (there is not
-				# a corresponding light node) so dont append it back to
-				# the map file
-				continue
-		tokens.append(data.tokens[token_idx])
+
+		if uuid in uuids_to_nodes:
+			var node: Node = uuids_to_nodes[uuid]
+			var serialized := _serialize_fgl_node_to_map(
+				node, map_settings)
+			if serialized.is_empty():
+				return # could also just not change this node?
+			tokens.append(serialized)
+			assert(not uuid in serialized_uuids)
+			serialized_uuids[uuid] = true
+		else:
+			# delete entity by not adding it
+			pass
 
 	# remove the EOF newline since we're appending with newlines already
 	if tokens.back() == "\n":
@@ -208,6 +231,38 @@ static func export_entities_to_map_file(map_node: FuncGodotMap) -> void:
 	map.close()
 	print("FuncGodotLightpass: export to .map file completed.")
 
+## Returns -2 on unable to find uuid of matching node, and -1 on unrecoverable
+## error. Otherwise it returns the uuid of the corresponding node to this item.
+static func _resolve_entity_with_no_uuid(
+	entity: Dictionary,
+	exportables: Array[Node],
+	map_settings: FuncGodotMapSettings) -> int:
+	var ERRMSG := str("FuncGodotLightpass: entity with no uuid found ",
+	"(something placed from trenchbroom, probably), and unable to resolve it ",
+	"with a generated node. Removing it now.")
+
+	if not "origin" in entity:
+		push_warning(ERRMSG)
+		# our only heuristic for finding matching nodes is by origin/position
+		return -2
+
+	var entity_position_according_to_map: Vector3 = _get_position_from_origin_string(
+		entity["origin"], map_settings.inverse_scale_factor)
+
+	var found := false
+	for node in exportables:
+		if not node is Node3D:
+			continue
+		if node.position.distance_squared_to(entity_position_according_to_map) < 0.001:
+			var uuid = node.get_meta(&"_godot_to_quake_uuid", -1)
+			if uuid == -1:
+				# not sure how this would even happen
+				push_error("FuncGodotLightpass: unrecoverable")
+			return uuid
+
+	push_warning(ERRMSG)
+	return -2
+
 static func _parse(cstream: FuncGodotLightpassCharStream) -> FuncGodotLightpassParseData:
 	var scopes_count: int = 0
 	var data := FuncGodotLightpassParseData.new()
@@ -217,8 +272,8 @@ static func _parse(cstream: FuncGodotLightpassCharStream) -> FuncGodotLightpassP
 	var current_property_value := ""
 	var entity_string: String
 	var comment_string: String
-	var slashcount: int = 0
 	var parse_step: int = -1
+	var comment: bool = false
 	const MAX_PARSE_STEP: int = 2 # parse key, middle, then parse value (0 1 2)
 	const PARSE_STEP_KEY: int = 0
 	const PARSE_STEP_VALUE: int = 2
@@ -230,7 +285,7 @@ static func _parse(cstream: FuncGodotLightpassCharStream) -> FuncGodotLightpassP
 
 		if char == "\n":
 			# what to do if a comment is ending
-			if slashcount >= 2:
+			if comment:
 				if scopes_count >= 1:
 					entity_string += comment_string
 				else:
@@ -244,19 +299,12 @@ static func _parse(cstream: FuncGodotLightpassCharStream) -> FuncGodotLightpassP
 				data.tokens.append(char)
 			else:
 				data.tokens.push_back(data.tokens.pop_back() + char)
-			slashcount = 0
+			comment = false
 			continue
 
-		if slashcount >= 2:
+		if comment:
 			comment_string += char
 			continue
-		if slashcount == 1 and char != "/": # slashes must be consecutive
-			# make up for the skipped /
-			if scopes_count >= 1:
-				entity_string += "/"
-			else:
-				data.tokens.append("/")
-			slashcount = 0
 
 		var start: int = cstream.get_last_char_position()
 
@@ -264,10 +312,11 @@ static func _parse(cstream: FuncGodotLightpassCharStream) -> FuncGodotLightpassP
 		# this match deals with delimiters that change state
 		match char:
 			"/":
-				if slashcount == 1:
-					comment_string = "//"
-				slashcount += 1
-				continue
+				if cstream.line_lookahead() == "/":
+					comment = true
+					cstream.getchar() # eat the second /
+					comment_string += "//"
+					continue
 			"{":
 				if scopes_count == 1:
 					entity_string += char
@@ -495,8 +544,9 @@ static func _serialize_fgl_node_to_map(node: Node, map_settings: FuncGodotMapSet
 		var propname: StringName = property["name"]
 		var value: Variant = node.get(propname)
 		if value == null:
-			push_warning("FuncGodotLightpass: Unknown node property ", propname,
-			" attempting to be serialized to map for node ", node)
+			# potentially bad property written here. but we can't push a warning
+			# because it could also just be a null texture in a decal or
+			# something. the get() API just sucks I guess
 			continue
 		var defaults = DEFAULTS_SCRIPT.get_default_values_for_class(node.get_class())
 		if (defaults.is_empty()):
@@ -555,6 +605,13 @@ static func serialize_variant_to_map(variant: Variant) -> String:
 			return "\"" + str(float(variant.x), " ", float(variant.y)) + "\""
 		Variant.Type.TYPE_VECTOR3:
 			return "\"" + str(float(variant.x), " ", float(variant.y), " ", float(variant.z)) + "\""
-		_:
-			push_error("unable to serialize ", variant)
+		Variant.Type.TYPE_OBJECT:
+			if variant is Resource:
+				var restype: String = "Resource"
+				var cls: String = (variant as Object).get_class()
+				if variant is Texture:
+					restype = "Texture"
+				const DELIMITER := "::"
+				return str("\"", restype, DELIMITER, cls, DELIMITER, variant.resource_path, "\"")
+	push_error("unable to serialize ", variant)
 	return ""

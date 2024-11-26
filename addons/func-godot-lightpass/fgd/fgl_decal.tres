@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="FuncGodotFGDPointClass" load_steps=4 format=3 uid="uid://bcyh20v8m64cv"]
+
+[ext_resource type="Resource" uid="uid://carm2503dekwv" path="res://addons/func-godot-lightpass/base_godot_exportable.tres" id="1_7vhqv"]
+[ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_point_class.gd" id="1_dnh6p"]
+[ext_resource type="Script" path="res://addons/func-godot-lightpass/fgl_node.gd" id="2_bvy8m"]
+
+[resource]
+script = ExtResource("1_dnh6p")
+script_class = ExtResource("2_bvy8m")
+apply_rotation_on_map_build = true
+classname = "fgl_decal"
+description = "A godot decal, placeable from and only visible in godot."
+func_godot_internal = false
+base_classes = Array[Resource]([ExtResource("1_7vhqv")])
+class_properties = {
+"albedo_mix": 1.0,
+"cull_mask": 1048575,
+"distance_fade_begin": 40.0,
+"distance_fade_enabled": false,
+"distance_fade_length": 10.0,
+"emission_energy": 1.0,
+"lower_fade": 0.3,
+"modulate": Color(1, 1, 1, 1),
+"normal_fade": 0.0,
+"size": Vector3(2, 2, 2),
+"texture_albedo": "",
+"texture_emission": "",
+"texture_normal": "",
+"texture_orm": "",
+"upper_fade": 0.3
+}
+class_property_descriptions = {}
+meta_properties = {
+"color": Color(0.8, 0.8, 0.8, 1),
+"model": "{\"path\": \"addons/func-godot-lightpass/icon/omni.png\", \"scale\": 1}",
+"size": AABB(-8, -8, -8, 8, 8, 8)
+}
+node_class = "Decal"
+name_property = ""

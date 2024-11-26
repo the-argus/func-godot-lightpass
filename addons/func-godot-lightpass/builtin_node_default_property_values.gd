@@ -160,6 +160,38 @@ const _DEFAULTS_BY_CLASSNAME := {
 		# float spot_range[default: 5.0]
 		"spot_range": 5.0,
 	},
+	"Decal": {
+		# float albedo_mix[default: 1.0]
+		"albedo_mix": 1.0,
+		# int cull_mask[default: 0xFFFFF]
+		"cull_mask": 0xFFFFF,
+		# float distance_fade_begin[default: 40.0]
+		"distance_fade_begin": 40.0,
+		# bool distance_fade_enabled[default: false]
+		"distance_fade_enabled": false,
+		# float distance_fade_length[default: 10.0]
+		"distance_fade_length": 10.0,
+		# float emission_energy[default: 1.0]
+		"emission_energy": 1.0,
+		# float lower_fade[default: 0.3]
+		"lower_fade": 0.3,
+		# Color modulate[default: Color(1, 1, 1, 1)]
+		"modulate": Color(1, 1, 1, 1),
+		# float normal_fade[default: 0.0]
+		"normal_fade": 0.0,
+		# Vector3 size[default: Vector3(2, 2, 2)]
+		"size": Vector3(2, 2, 2),
+		# Texture2D texture_albedo
+		"texture_albedo": null,
+		# Texture2D texture_emission
+		"texture_emission": null,
+		# Texture2D texture_normal
+		"texture_normal": null,
+		# Texture2D texture_orm
+		"texture_orm": null,
+		# float upper_fade [default: 0.3]
+		"upper_fade": 0.3,
+	},
 }
 
 static func get_default_values_for_class(classname: String) -> Dictionary:
@@ -195,5 +227,10 @@ static func get_default_values_for_class(classname: String) -> Dictionary:
 			_DEFAULTS_BY_CLASSNAME["VisualInstance3D"], true).merged(
 			_DEFAULTS_BY_CLASSNAME["Light3D"], true).merged(
 			_DEFAULTS_BY_CLASSNAME["SpotLight3D"], true)
+		"Decal":
+			return _DEFAULTS_BY_CLASSNAME["Node"].merged(
+			_DEFAULTS_BY_CLASSNAME["Node3D"], true).merged(
+			_DEFAULTS_BY_CLASSNAME["VisualInstance3D"], true).merged(
+			_DEFAULTS_BY_CLASSNAME["Decal"], true)
 	push_error("FuncGodotLightpass: attempt to get defaults for unsupported node type ", classname)
 	return {}

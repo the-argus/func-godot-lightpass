@@ -26,6 +26,8 @@ func _ready() -> void:
 		classname = "fglight_spot"
 	elif is_class("OmniLight3D"):
 		classname = "fglight_omni"
+	elif is_class("Decal"):
+		classname = "fgl_decal"
 	if not classname.is_empty():
 		FuncGodotLightpass.apply_classname_metadata(classname, self)
 
@@ -38,4 +40,3 @@ func _func_godot_apply_properties(props: Dictionary) -> void:
 	# filter out stuff that isnt @export, or is handled by func_godot
 	FuncGodotLightpass._filter_property_list_for_func_godot(self, plist)
 	FuncGodotLightpass.apply_entity_properties_as_object_properties(self, props, plist)
-

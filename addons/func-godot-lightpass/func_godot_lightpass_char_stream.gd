@@ -56,6 +56,20 @@ func is_eof_reached() -> bool:
 func get_last_char_position() -> int:
 	return _readhead - 1
 
+## Allows looking ahead on character on the current line. If looking ahead over
+## a line break or past EOF, returns empty string.
+func line_lookahead() -> String:
+	if is_eof_reached():
+		return ""
+	if _is_file:
+		if _file_line_offset + 1 >= _fileline.length():
+			return ""
+		else:
+			return _fileline[_file_line_offset + 1]
+	else:
+		if _readhead + 1 >= _content.length(): return ""
+		return _content[_readhead + 1]
+
 func getchar() -> String:
 	if is_eof_reached():
 		push_error("FuncGodotLightpass: getchar called but EOF reached")
