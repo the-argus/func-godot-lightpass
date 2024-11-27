@@ -55,6 +55,5 @@ TODO:
 - More testing.
 - Add support for TrenchBroom groups and layers.
 - Document how you can set up writing _any_ node back to a .map file yourself.
-- Enable serialization of light projector textures.
 - Generate TrenchBroom-style entity number comments in the `.map` file to reduce
   random diffs created when opening the file in the editor.
