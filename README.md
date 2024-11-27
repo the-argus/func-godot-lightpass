@@ -3,7 +3,7 @@
 This is a Godot addon, and a companion for [func_godot](https://github.com/func_godot/func_godot_plugin)
 which allows placing lights and decals in your level from godot, and exporting
 back to a `.map` file. It also provides entity definitions for point, spot, and
-directional lights, and decals.
+directional lights, decals, and world environment nodes.
 
 ## Getting Started
 
@@ -37,17 +37,17 @@ primarily.
 Features:
 
 - Writing Godot nodes back to map files (Omni, Spot, and Directional lights
-  supported, and Decals)
+  supported, Decals, and WorldEnvironment)
 - Editing nodes from a level editor just as well as from Godot
-- Light and Decal entity definitions which have key-value-pairs that correspond
-  1:1 with their Godot node counterparts
+- Light, Decal, and WorldEnvironment entity definitions which have key-value-pairs
+  that correspond 1:1 with their Godot node counterparts
 
 TODO:
 
 - More testing.
-- Add support for WorldEnvironment and audio sources.
+- Add support for audio sources.
 - Add support for TrenchBroom groups and layers.
-- Document how you can set up writing *any* node back to a .map file yourself.
+- Document how you can set up writing _any_ node back to a .map file yourself.
 - Enable serialization of light projector textures.
 - Generate TrenchBroom-style entity number comments in the `.map` file to reduce
   random diffs created when opening the file in the editor.
