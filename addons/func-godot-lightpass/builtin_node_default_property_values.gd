@@ -192,6 +192,14 @@ const _DEFAULTS_BY_CLASSNAME := {
 		# float upper_fade [default: 0.3]
 		"upper_fade": 0.3,
 	},
+	"WorldEnvironment": {
+		# CameraAttributes camera_attributes
+		"camera_attributes": null,
+		# Compositor compositor
+		"compositor": null,
+		# Environment environment
+		"environment": null,
+	},
 }
 
 static func get_default_values_for_class(classname: String) -> Dictionary:
@@ -232,5 +240,8 @@ static func get_default_values_for_class(classname: String) -> Dictionary:
 			_DEFAULTS_BY_CLASSNAME["Node3D"], true).merged(
 			_DEFAULTS_BY_CLASSNAME["VisualInstance3D"], true).merged(
 			_DEFAULTS_BY_CLASSNAME["Decal"], true)
+		"WorldEnvironment":
+			return _DEFAULTS_BY_CLASSNAME["Node"].merged(
+			_DEFAULTS_BY_CLASSNAME["WorldEnvironment"], true)
 	push_error("FuncGodotLightpass: attempt to get defaults for unsupported node type ", classname)
 	return {}

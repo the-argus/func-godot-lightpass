@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="FuncGodotFGDFile" load_steps=8 format=3 uid="uid://bbis4gh3qax12"]
+[gd_resource type="Resource" script_class="FuncGodotFGDFile" load_steps=9 format=3 uid="uid://bbis4gh3qax12"]
 
 [ext_resource type="Resource" uid="uid://carm2503dekwv" path="res://addons/func-godot-lightpass/base_godot_exportable.tres" id="1_makkp"]
 [ext_resource type="Script" path="res://addons/func_godot/src/fgd/func_godot_fgd_file.gd" id="1_qwc5c"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://dk2ug202hjdn5" path="res://addons/func-godot-lightpass/fgd/fglight_spot.tres" id="4_6tc0a"]
 [ext_resource type="Resource" uid="uid://cxsrhsjpx4wvt" path="res://addons/func-godot-lightpass/fgd/fglight_directional.tres" id="5_me2ma"]
 [ext_resource type="Resource" uid="uid://bcyh20v8m64cv" path="res://addons/func-godot-lightpass/fgd/fgl_decal.tres" id="6_qyv3j"]
+[ext_resource type="Resource" uid="uid://l1bn1xukbj07" path="res://addons/func-godot-lightpass/fgd/fgl_worldenv.tres" id="7_gu1x3"]
 
 [resource]
 script = ExtResource("1_qwc5c")
@@ -14,4 +15,4 @@ export_file = false
 target_map_editor = 1
 fgd_name = "FuncGodotLightpass"
 base_fgd_files = Array[Resource]([])
-entity_definitions = Array[Resource]([ExtResource("1_makkp"), ExtResource("2_dtnu2"), ExtResource("3_i0p25"), ExtResource("4_6tc0a"), ExtResource("5_me2ma"), ExtResource("6_qyv3j")])
+entity_definitions = Array[Resource]([ExtResource("1_makkp"), ExtResource("2_dtnu2"), ExtResource("3_i0p25"), ExtResource("4_6tc0a"), ExtResource("5_me2ma"), ExtResource("6_qyv3j"), ExtResource("7_gu1x3")])

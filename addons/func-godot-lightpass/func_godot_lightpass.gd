@@ -7,6 +7,7 @@ const CUSTOM_NODE_NAMES := [
 	"FGLSpotLight",
 	"FGLDirectionalLight",
 	"FGLDecal",
+	"FGLWorldEnvironment",
 ]
 const FGL_NODE_SCRIPT := preload("fgl_node.gd")
 const CUSTOM_NODE_INHERITANCE := [
@@ -14,6 +15,7 @@ const CUSTOM_NODE_INHERITANCE := [
 	"SpotLight3D",
 	"DirectionalLight3D",
 	"Decal",
+	"WorldEnvironment",
 ]
 const LIGHT_ICON = preload("./icon/omni.png")
 const DEFAULTS_SCRIPT = preload("./builtin_node_default_property_values.gd")
@@ -74,12 +76,12 @@ static func apply_entity_properties_as_object_properties(
 		var value = entity_properties[name_to_check]
 
 		if type == Variant.Type.TYPE_OBJECT and value is String and value != "":
-			var resource_path: String = value.get_slice("::", 2)
 			# resource_type is a special value for FuncGodotLightpass determined
 			# by behavior in serialize_variant_to_map
 			var resource_type: String = value.get_slice("::", 0)
 			# resource class is just the .get_class() of the value
 			var resource_class: String = value.get_slice("::", 1)
+			var resource_path: String = value.substr(resource_type.length() + resource_class.length() + 4)
 
 			if resource_path.is_empty() or resource_type.is_empty() or resource_class.is_empty():
 				push_error("FuncGodotLightpass: got TYPE_OBJECT for property ",
@@ -94,7 +96,7 @@ static func apply_entity_properties_as_object_properties(
 				"referenced resource get moved around in the project files?")
 				continue
 
-			value = ResourceLoader.load(resource_path, )
+			value = ResourceLoader.load(resource_path, resource_class)
 
 		object.set(propname, value)
 
@@ -607,11 +609,25 @@ static func serialize_variant_to_map(variant: Variant) -> String:
 			return "\"" + str(float(variant.x), " ", float(variant.y), " ", float(variant.z)) + "\""
 		Variant.Type.TYPE_OBJECT:
 			if variant is Resource:
+				var path: String = variant.resource_path
+				if path.get_slice_count("::") >= 2:
+					push_warning("FuncGodotLightpass: Serializing resource ",
+					variant, " to a .map file, but it seems to be stored ",
+					"within the scene file itself. It could potentially be ",
+					"lost or have its UID regenerated, causing loading ",
+					"errors. Please save the resource to a permanent file ",
+					"location to fix this.")
 				var restype: String = "Resource"
 				var cls: String = (variant as Object).get_class()
 				if variant is Texture:
 					restype = "Texture"
+				elif variant is Environment:
+					restype = "Environment"
+				elif variant is CameraAttributes:
+					restype = "CameraAttributes"
+				elif variant is Compositor:
+					restype = "Compositor"
 				const DELIMITER := "::"
-				return str("\"", restype, DELIMITER, cls, DELIMITER, variant.resource_path, "\"")
+				return str("\"", restype, DELIMITER, cls, DELIMITER, path, "\"")
 	push_error("unable to serialize ", variant)
 	return ""

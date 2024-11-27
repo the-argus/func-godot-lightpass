@@ -28,6 +28,8 @@ func _ready() -> void:
 		classname = "fglight_omni"
 	elif is_class("Decal"):
 		classname = "fgl_decal"
+	elif is_class("WorldEnvironment"):
+		classname = "fgl_worldenv"
 	if not classname.is_empty():
 		FuncGodotLightpass.apply_classname_metadata(classname, self)
 
