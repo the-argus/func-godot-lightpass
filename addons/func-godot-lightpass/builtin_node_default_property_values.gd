@@ -94,6 +94,7 @@ const _DEFAULTS_BY_CLASSNAME := {
 		# bool light_negative[default: false]
 		"light_negative": false,
 		# Texture2D light_projector
+		"light_projector": null,
 		# float light_size[default: 0.0]
 		"light_size": 0.0,
 		# float light_specular[default: 0.5]

@@ -502,7 +502,6 @@ static func _filter_property_list_for_func_godot(object: Object, plist: Array[Di
 	if object is Light3D:
 		ObjectSerializer.filter_properties({
 			light_color = { mode = PropertyFilterMode.RENAME, new_name = "color" },
-			light_projector = REMOVE,
 			light_temperature = REMOVE,
 		}, plist)
 
