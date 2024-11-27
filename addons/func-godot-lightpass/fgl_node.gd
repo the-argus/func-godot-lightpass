@@ -30,6 +30,8 @@ func _ready() -> void:
 		classname = "fgl_decal"
 	elif is_class("WorldEnvironment"):
 		classname = "fgl_worldenv"
+	elif is_class("AudioStreamPlayer3D"):
+		classname = "fgl_audioplayer"
 	if not classname.is_empty():
 		FuncGodotLightpass.apply_classname_metadata(classname, self)
 

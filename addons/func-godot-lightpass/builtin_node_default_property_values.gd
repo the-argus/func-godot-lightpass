@@ -200,6 +200,50 @@ const _DEFAULTS_BY_CLASSNAME := {
 		# Environment environment
 		"environment": null,
 	},
+	"AudioStreamPlayer3D": {
+		# int area_mask[default: 1]
+		"area_mask": 1,
+		# float attenuation_filter_cutoff_hz[default: 5000.0]
+		"attenuation_filter_cutoff_hz": 5000.0,
+		# float attenuation_filter_db[default: -24.0]
+		"attenuation_filter_db": -24.0,
+		# AttenuationModel attenuation_model[default: 0]
+		"attenuation_model": AudioStreamPlayer3D.AttenuationModel.ATTENUATION_INVERSE_DISTANCE,
+		# bool autoplay[default: false]
+		"autoplay": false,
+		# StringName bus[default: &"Master"]
+		"bus": &"Master",
+		# DopplerTracking doppler_tracking[default: 0]
+		"doppler_tracking": AudioStreamPlayer3D.DopplerTracking.DOPPLER_TRACKING_DISABLED,
+		# float emission_angle_degrees[default: 45.0]
+		"emission_angle_degrees": 45.0,
+		# bool emission_angle_enabled[default: false]
+		"emission_angle_enabled": false,
+		# float emission_angle_filter_attenuation_db[default: -12.0]
+		"emission_angle_filter_attenuation_db": -12.0,
+		# float max_db[default: 3.0]
+		"max_db": 3.0,
+		# float max_distance[default: 0.0]
+		"max_distance": 0.0,
+		# int max_polyphony[default: 1]
+		"max_polyphony": 1,
+		# float panning_strength[default: 1.0]
+		"panning_strength": 1.0,
+		# float pitch_scale[default: 1.0]
+		"pitch_scale": 1.0,
+		# AudioServer.PlaybackType playback_type[default: 0]
+		"playback_type": AudioServer.PlaybackType.PLAYBACK_TYPE_DEFAULT,
+		# bool playing[default: false]
+		"playing": false,
+		# AudioStream stream
+		"stream": null,
+		# bool stream_paused[default: false]
+		"stream_paused": false,
+		# float unit_size[default: 10.0]
+		"unit_size": 10.0,
+		# float volume_db[default: 0.0]
+		"volume_db": 0.0,
+	},
 }
 
 static func get_default_values_for_class(classname: String) -> Dictionary:
@@ -211,7 +255,7 @@ static func get_default_values_for_class(classname: String) -> Dictionary:
 		"VisualInstance3D":
 			return _DEFAULTS_BY_CLASSNAME["Node"].merged(
 				_DEFAULTS_BY_CLASSNAME["Node3D"], true).merged(
-				_DEFAULTS_BY_CLASSNAME["VisualInstance3D"])
+				_DEFAULTS_BY_CLASSNAME["VisualInstance3D"], true)
 		"Light3D":
 			return _DEFAULTS_BY_CLASSNAME["Node"].merged(
 			_DEFAULTS_BY_CLASSNAME["Node3D"], true).merged(
@@ -243,5 +287,9 @@ static func get_default_values_for_class(classname: String) -> Dictionary:
 		"WorldEnvironment":
 			return _DEFAULTS_BY_CLASSNAME["Node"].merged(
 			_DEFAULTS_BY_CLASSNAME["WorldEnvironment"], true)
+		"AudioStreamPlayer3D":
+			return _DEFAULTS_BY_CLASSNAME["Node"].merged(
+				_DEFAULTS_BY_CLASSNAME["Node3D"], true).merged(
+				_DEFAULTS_BY_CLASSNAME["AudioStreamPlayer3D"], true)
 	push_error("FuncGodotLightpass: attempt to get defaults for unsupported node type ", classname)
 	return {}

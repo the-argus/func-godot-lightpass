@@ -8,6 +8,7 @@ const CUSTOM_NODE_NAMES := [
 	"FGLDirectionalLight",
 	"FGLDecal",
 	"FGLWorldEnvironment",
+	"FGLAudioPlayer",
 ]
 const FGL_NODE_SCRIPT := preload("fgl_node.gd")
 const CUSTOM_NODE_INHERITANCE := [
@@ -16,6 +17,7 @@ const CUSTOM_NODE_INHERITANCE := [
 	"DirectionalLight3D",
 	"Decal",
 	"WorldEnvironment",
+	"AudioStreamPlayer3D",
 ]
 const LIGHT_ICON = preload("./icon/omni.png")
 const DEFAULTS_SCRIPT = preload("./builtin_node_default_property_values.gd")
@@ -595,7 +597,9 @@ static func serialize_variant_to_map(variant: Variant) -> String:
 		Variant.Type.TYPE_FLOAT:
 			return "\"" + str(float(variant)) + "\""
 		Variant.Type.TYPE_STRING:
-			return "\"" + str(variant) + "\""
+			return "\"" + variant + "\""
+		Variant.Type.TYPE_STRING_NAME:
+			return "\"" + variant + "\""
 		Variant.Type.TYPE_COLOR:
 			var color: Color = variant
 			if color.a != 1.0:
@@ -610,6 +614,11 @@ static func serialize_variant_to_map(variant: Variant) -> String:
 		Variant.Type.TYPE_OBJECT:
 			if variant is Resource:
 				var path: String = variant.resource_path
+				if path.is_empty():
+					push_error("FuncGodotLightpass: attempting to serialize ",
+					"resource ", variant,
+					" which has no path. Is the scene saved to disk?")
+					return ""
 				if path.get_slice_count("::") >= 2:
 					push_warning("FuncGodotLightpass: Serializing resource ",
 					variant, " to a .map file, but it seems to be stored ",
