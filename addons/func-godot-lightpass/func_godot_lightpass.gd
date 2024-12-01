@@ -268,6 +268,8 @@ static func _gen_uuid(used_uuids: Dictionary) -> int:
 
 static func _fix_trenchbroom_group_metadata(exportables: Array[Node], map_node: FuncGodotMap) -> void:
 	for node in exportables:
+		node.remove_meta(&"_fgl_tb_layer")
+		node.remove_meta(&"_fgl_tb_group")
 		var parent := node.get_parent()
 		while parent != map_node:
 			if not is_instance_valid(parent):
