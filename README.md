@@ -5,6 +5,8 @@ which allows placing visual elements in your level from godot, and exporting
 back to a `.map` file. It also provides entity definitions for point, spot, and
 directional lights, decals, world environment nodes, and 3D audio players.
 
+[Documentation](./DOC.md) is available.
+
 ## Getting Started
 
 Download the source code for this repository and unzip it directly in your
@@ -46,14 +48,15 @@ Features:
 
 - Writing Godot nodes back to map files (Omni, Spot, and Directional lights,
   Decals, WorldEnvironment, and AudioStreamPlayer3D)
+- Support for modifying the groups and layers of induvidual nodes by dragging
+  them to have different parent nodes, when func_godot's
+  `use_trenchbroom_groups_hierarchy` is enabled
 - Editing nodes from a level editor just as well as from Godot
 - Light, Decal, WorldEnvironment, and AudioStreamPlayer3D entity definitions
   which have key-value-pairs that correspond 1:1 with their Godot node counterparts
 
 TODO:
 
-- More testing.
-- Add support for TrenchBroom groups and layers.
 - Document how you can set up writing _any_ node back to a .map file yourself.
 - Generate TrenchBroom-style entity number comments in the `.map` file to reduce
   random diffs created when opening the file in the editor.
