@@ -627,13 +627,15 @@ static func _serialize_fgl_node_to_map(node: Node, map_node: FuncGodotMap) -> St
 			# because it could also just be a null texture in a decal or
 			# something. TODO: try "propname in node" and print warning
 			continue
-		# skip stuff that is default anyways
-		var default = defaults[propname]
-		# special case for fp innaccurracies
-		if default is float and value is float and absf(value - default) < FP_EPSILON:
-			continue
-		elif value == defaults[propname]:
-			continue
+
+		if "ignore_if" in property or propname in defaults:
+			# skip stuff that is default anyways
+			var default = property.get("ignore_if", defaults[propname])
+			# special case for fp innaccurracies
+			if default is float and value is float and absf(value - default) < FP_EPSILON:
+				continue
+			elif value == defaults[propname]:
+				continue
 
 		var outname := property.get("external_name", propname)
 
