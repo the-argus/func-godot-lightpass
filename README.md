@@ -13,8 +13,11 @@ Download the source code for this repository and unzip it directly in your
 project's folder. Then, open or reload godot, and navigate to
 AssetLib > Plugins, and enable the addon by pressing the check mark.
 
-In any scene where you have a `FuncGodotMap`, you can now add (as children to
-the map node):
+Find your FGD file resource, and add `res://addons/func-godot-lightpass/func_godot_lightpass_fgd.tres`
+as a base FGD file.
+
+In any scene where you have a `FuncGodotMap` with the edited FGD file, you can
+now add (as children to the map node):
 
 - `FGLOmniLight`
 - `FGLSpotLight`
@@ -24,7 +27,7 @@ the map node):
 - `FGLAudioPlayer`
 
 These nodes have an additional option on them: "Export all exportable nodes."
-Pressing this button will cause the node to find all of the other nodes
+Pressing this button will cause the node to find all of the other FGL nodes
 underneath the same `FuncGodotMap` and write them out to the corresponding `.map`
 file, appending them as entities to the end.
 
@@ -54,9 +57,10 @@ Features:
 - Editing nodes from a level editor just as well as from Godot
 - Light, Decal, WorldEnvironment, and AudioStreamPlayer3D entity definitions
   which have key-value-pairs that correspond 1:1 with their Godot node counterparts
+- Ability to define custom scripts which can be put on your own nodes, to write
+  them out to the map file as well
 
 TODO:
 
-- Document how you can set up writing _any_ node back to a .map file yourself.
 - Generate TrenchBroom-style entity number comments in the `.map` file to reduce
   random diffs created when opening the file in the editor.
