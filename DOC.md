@@ -48,15 +48,49 @@ Each of these has an in-editor button at the top of its inspector window labelle
 for all of the nodes under the same FuncGodotMap as the one which the user pressed
 the button on. It will write each of them out into the `.map` file.
 
-## Warnings and duplicating lights
+## Warnings and errors
+
+Most instances of `push_warning` in this plugin are reserved for invalid input from
+map files or incorrect API usage- so you won't encounter them if you're following
+the documentation. But there are some warnings you will naturally encounter when
+using FuncGodotLightpass, unfortunately. These warnings are covered in this section.
+They are harmless or at least easily fixed, provided you know about them going
+in to using this plugin.
+
+### Duplicating lights
 
 You may get warnings after duplicating lights in either Godot or TrenchBroom.
 If you can tell that the warnings correspond to lights you just duplicated, then
-you can safely ignore them. Most users should only ever see those warnings
-emitted by FuncGodotLightpass.
+you can safely ignore them.
 
 As a rule of thumb, though, if you see warnings go away after one export, that
 means that some auto fix-up was applied to your nodes and you can ignore the warnings.
+
+### Nodes with resources
+
+Most nodes have some field which contain a resource. For example, lights can have
+projector textures, and audio players can have audio streams. When encountering
+such a resource when writing to the map file, FuncGodotLightpass will write the
+resource's path to the file. There are two possible situations here:
+
+1. The resource is some `.res` file, and so the `res://path/to/resource.res` path
+   is stored in the `.map` file. No warnings are emitted, but **the loading process
+   will break if you move the resource file somewhere else**. FuncGodotLightpass
+   does not have a mechanism to update paths written to `.map` files.
+2. The resource is unique, and not saved to a file. That means the path that
+   FuncGodotLightpass will store is to the scene file, with the random unique
+   ID of the resource appended to the end. In this case, FuncGodotLightpass will
+   print a warning. Godot has a habit of regenerating UIDs (especially when a
+   project is edited by multiple hosts), so the path saved to the `.map` file may
+   randomly stop working. Additionally, whether or not this path can still be
+   loaded by `ResourceLoader` is dependent on editor state. It will *usually*
+   work, but it will break if the owning node is deleted and the project is
+   reloaded.
+
+tldr: save all your resources out to a file location, and never move those files.
+
+If you absolutely need to move the files, you will have to manually find and replace
+the paths (all beginning with res://) in the `.map` file.
 
 ## Adding nodes to TrenchBroom layers or groups from Godot
 
@@ -120,7 +154,7 @@ func _func_godot_apply_properties(props: Dictionary) -> void:
 ```
 
 FuncGodotLightpass needs to know the classname so that it can serialize a node to
-the map file and provide the correct classname there. However, `apply_build_metadata`
+the map file and provide the correct classname there. However, `apply_classname_metadata`
 is internally called by `apply_build_metadata`, using a `"classname"` value found
 in `props`. So if you don't plan on ever creating your nodes in Godot, you can
 omit the contents of the `_ready()` function in the above example. The
@@ -132,7 +166,7 @@ By default, when serializing your node, FuncGodotLightpass will serialize all
 `@export` properties, as well as builtin node properties. It learns what properties
 a node has by reading a "property list" data structure, usually returned by
 `Object.get_property_list()`. Read the documentation for that function to learn
-how to format a property list. You can override `_get_property_list_with_context()`
+how to format a property list. You can define `_get_property_list_with_context()`
 to change what properties FuncGodotLightpass knows about, and you can override
 `_get()` to change how it gets them. For example, here is a script which has only
 one property, regardless of what node type it inherits from:
@@ -156,9 +190,9 @@ func _get(property: StringName) -> Variant:
 ```
 
 `ignore_if` is not a standard value for a property list. It is an additional
-property description values understood only by FuncGodotLightpass. Hopefully,
-it is self explanatory: ignore this property, if it is some value. It is usually
-set to the default value.
+property description value understood only by FuncGodotLightpass. It instructs
+the plugin to ignore the property, if it is some value. It is usually set to the
+default value.
 
 If a property is of type float, FuncGodotLightpass will try to account for
 floating point error when comparing for equality with the `ignore_if` value.
