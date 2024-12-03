@@ -99,7 +99,7 @@ static func apply_entity_properties_as_object_properties(
 				"FuncGodotLightpass error.")
 				continue
 
-            # TODO: check if resource_class matches classname, probably
+			# TODO: check if resource_class matches classname, probably
 
 			if not ResourceLoader.exists(resource_path):
 				push_error("FuncGodotLightpass: Attempt to load a resource ",
