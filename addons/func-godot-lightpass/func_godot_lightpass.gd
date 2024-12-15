@@ -125,6 +125,7 @@ static func export_entities_to_map_file(map_node: FuncGodotMap) -> void:
 	if not cstream.is_good(): return
 
 	var data: FuncGodotLightpassParseData = _parse(cstream)
+	cstream.close()
 	if not data: return
 
 	var exportable_classnames := _build_godot_exportable_classnames(
@@ -218,6 +219,10 @@ static func export_entities_to_map_file(map_node: FuncGodotMap) -> void:
 				# delete entity
 				continue
 
+		# delete entity if it has no matching node in the scene
+		if not uuid in uuids_to_nodes_buckets:
+			continue
+
 		var node_bucket: Array[Node] = uuids_to_nodes_buckets[uuid]
 		var entity_bucket: Array[Dictionary] = data.uuids_to_point_entities_buckets[uuid]
 		var idx := entity_bucket.find(entity)
@@ -254,6 +259,12 @@ static func export_entities_to_map_file(map_node: FuncGodotMap) -> void:
 
 	# erase the whole file!! if closed here data could be lost
 	var map: FileAccess = FileAccess.open(map_file, FileAccess.READ_WRITE)
+	if map == null:
+		# ctrl-click on get_open_error here to see docs for what codes mean
+		push_error("FuncGodotLightpass: Unable to open file (", map_file,
+		") with READ_WRITE permissions, for exporting. Error code: ",
+		FileAccess.get_open_error())
+		return
 	map.resize(0)
 	for token in tokens:
 		map.store_string(token)

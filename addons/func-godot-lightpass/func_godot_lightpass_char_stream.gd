@@ -15,10 +15,15 @@ func is_good() -> bool:
 	return _is_good
 
 func _init(path: String) -> void:
-	var file: FileAccess = FileAccess.open(path, FileAccess.READ_WRITE)
+	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 
 	if file == null:
-		push_error("FuncGodotLightpass: failed to open file (" + path + ")")
+		# if this fires, check the godot docs on the @GlobalScope Error enum
+		# to translate the error code into something comprehensible. just
+		# ctrl + click on get_open_error() here, if you're in the builtin editor
+		push_error("FuncGodotLightpass: failed to open file (",
+		path, ") with READ permission, error code: ",
+		FileAccess.get_open_error())
 		return
 
 	var lines: PackedStringArray = []
